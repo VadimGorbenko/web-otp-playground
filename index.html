@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Web otp playground</title>
+</head>
+
+<body>
+  <input type="text" autocomplete="one-time-code" inputmode="numeric" />
+  <script>
+    if ('OTPCredential' in window) {
+      console.log('OTPCredential supported')
+      window.addEventListener('DOMContentLoaded', e => {
+        const input = document.querySelector('input[autocomplete="one-time-code"]');
+        console.log('DOMContentLoaded');
+        /* if (!input) return */
+        const ac = new AbortController();
+        /* const form = input.closest('form'); */
+        /* if (form) {
+          form.addEventListener('submit', e => {
+            ac.abort();
+          });
+        } */
+        navigator.credentials.get({
+          otp: {
+            transport: ['sms']
+          },
+          signal: ac.signal
+        }).then(otp => {
+          console.log(`code is ${otp.code}`)
+          input.value = otp.code;
+          //if (form) form.submit();
+        }).catch(err => {
+          console.log(err);
+        });
+      });
+    }
+  </script>
+</body>
+
+</html>
