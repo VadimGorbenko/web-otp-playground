@@ -10,35 +10,27 @@
 
 <body>
   <input type="text" autocomplete="one-time-code" inputmode="numeric" />
+  <button type="button" id="start">Start</button>
   <script>
-    if ('OTPCredential' in window) {
-      console.log('OTPCredential supported')
-      const input = document.querySelector('input[autocomplete="one-time-code"]');
-      console.log('DOMContentLoaded');
-      /* if (!input) return */
-      // const ac = new AbortController();
-      /* const form = input.closest('form'); */
-      /* if (form) {
-        form.addEventListener('submit', e => {
-          ac.abort();
+    start.addEventListener('click', function(){
+      if ('OTPCredential' in window) {
+        const input = document.querySelector('input[autocomplete="one-time-code"]');
+        const codePromise = navigator.credentials.get({
+          otp: {
+            transport: ['sms']
+          },
+        })
+  
+        codePromise
+        .then(function(otp){
+          console.log(`code is ${otp.code}`)
+          input.value = otp.code;
+          //if (form) form.submit();
+        }).catch(err => {
+          console.log(err);
         });
-      } */
-      const codePromise = navigator.credentials.get({
-        otp: {
-          transport: ['sms']
-        },
-        // signal: ac.signal
-      })
-
-      codePromise
-      .then(function(otp){
-        console.log(`code is ${otp.code}`)
-        input.value = otp.code;
-        //if (form) form.submit();
-      }).catch(err => {
-        console.log(err);
-      });
-    }
+      }
+    })
   </script>
 </body>
 
