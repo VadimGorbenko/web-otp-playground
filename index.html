@@ -11,14 +11,18 @@
 <body>
   <input type="text" autocomplete="one-time-code" inputmode="numeric" />
   <button type="button" id="start">Start</button>
+  <button type="button" id="abort">Abort</button>
   <script>
-    start.addEventListener('click', function(){
+    const ac = new AbortController();
+    start.addEventListener('click', function(){ 
       if ('OTPCredential' in window) {
         const input = document.querySelector('input[autocomplete="one-time-code"]');
+
         const codePromise = navigator.credentials.get({
           otp: {
             transport: ['sms']
           },
+          signal: ac.signal
         })
   
         codePromise
@@ -30,6 +34,10 @@
           console.log(err);
         });
       }
+    })
+    
+    abort.addEventListener('click', function(){
+      ac.abort()
     })
   </script>
 </body>
