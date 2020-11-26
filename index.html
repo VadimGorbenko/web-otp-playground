@@ -13,29 +13,30 @@
   <script>
     if ('OTPCredential' in window) {
       console.log('OTPCredential supported')
-      window.addEventListener('DOMContentLoaded', e => {
-        const input = document.querySelector('input[autocomplete="one-time-code"]');
-        console.log('DOMContentLoaded');
-        /* if (!input) return */
-        const ac = new AbortController();
-        /* const form = input.closest('form'); */
-        /* if (form) {
-          form.addEventListener('submit', e => {
-            ac.abort();
-          });
-        } */
-        navigator.credentials.get({
-          otp: {
-            transport: ['sms']
-          },
-          signal: ac.signal
-        }).then(otp => {
-          console.log(`code is ${otp.code}`)
-          input.value = otp.code;
-          //if (form) form.submit();
-        }).catch(err => {
-          console.log(err);
+      const input = document.querySelector('input[autocomplete="one-time-code"]');
+      console.log('DOMContentLoaded');
+      /* if (!input) return */
+      // const ac = new AbortController();
+      /* const form = input.closest('form'); */
+      /* if (form) {
+        form.addEventListener('submit', e => {
+          ac.abort();
         });
+      } */
+      const codePromise = navigator.credentials.get({
+        otp: {
+          transport: ['sms']
+        },
+        // signal: ac.signal
+      })
+
+      codePromise
+      .then(function(otp){
+        console.log(`code is ${otp.code}`)
+        input.value = otp.code;
+        //if (form) form.submit();
+      }).catch(err => {
+        console.log(err);
       });
     }
   </script>
